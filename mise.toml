@@ -1,0 +1,5 @@
+[tools]
+node = "24"
+
+task = "latest"
+"npm:@fission-ai/openspec"  = "0.18.0"
