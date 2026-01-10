@@ -1,0 +1,14 @@
+# yaml-language-server: $schema=https://dealenx.github.io/dokployfile/schema.json
+version: "1"
+meta:
+  slug: "my-app"
+  name: "My Awesome App"
+  version: "1.0.0"
+  description: "A cool app for cool people"
+  logo: "logo.png"
+  tags: ["web"]
+  links:
+    github: "https://github.com/..."
+template:
+  compose: "docker-compose.yml"
+  config: "template.toml"
