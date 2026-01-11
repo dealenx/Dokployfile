@@ -1,7 +1,83 @@
 {
-  "$ref": "#/definitions/Dokployfile",
-  "definitions": {
-    "Dokployfile": {}
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "version": {
+      "type": "string",
+      "const": "1"
+    },
+    "meta": {
+      "type": "object",
+      "properties": {
+        "slug": {
+          "type": "string",
+          "description": "Matches 'id' in meta.json"
+        },
+        "name": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "logo": {
+          "description": "Path or URL",
+          "type": "string"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "links": {
+          "description": "Matches meta.json { github: '...', website: '...' }",
+          "type": "object",
+          "propertyNames": {
+            "type": "string"
+          },
+          "additionalProperties": {
+            "type": "string",
+            "format": "uri"
+          }
+        }
+      },
+      "required": [
+        "slug",
+        "name",
+        "version"
+      ],
+      "additionalProperties": false
+    },
+    "template": {
+      "default": {},
+      "type": "object",
+      "properties": {
+        "compose": {
+          "default": "docker-compose.yml",
+          "type": "string"
+        },
+        "config": {
+          "default": "template.toml",
+          "type": "string"
+        },
+        "instructions": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "compose",
+        "config"
+      ],
+      "additionalProperties": false
+    }
   },
-  "$schema": "http://json-schema.org/draft-07/schema#"
+  "required": [
+    "version",
+    "meta",
+    "template"
+  ],
+  "additionalProperties": false
 }

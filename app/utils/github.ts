@@ -6,10 +6,9 @@ export async function fetchGithubFile(
   branch: string,
   path: string
 ): Promise<string> {
-  const url = `${GITHUB_RAW_BASE}/${owner}/${repo}/${branch}/${path.replace(
-    /^\.\//,
-    ""
-  )}`;
+  const url = `${GITHUB_RAW_BASE}/${owner}/${repo}/${branch}/${path
+    .replace(/^\.\//, "")
+    .replace(/^\//, "")}`;
   const response = await fetch(url);
 
   if (!response.ok) {

@@ -10,7 +10,7 @@ export const DokployfileSchema = z.object({
     logo: z.string().optional().describe("Path or URL"),
     tags: z.array(z.string()).optional(),
     links: z
-      .record(z.string().url())
+      .record(z.string(), z.string().url())
       .optional()
       .describe("Matches meta.json { github: '...', website: '...' }"),
   }),

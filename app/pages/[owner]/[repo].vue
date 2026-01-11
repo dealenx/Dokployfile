@@ -184,7 +184,7 @@ onMounted(() => {
           <CardContent class="space-y-4">
             <p class="text-sm text-muted-foreground">Copy this Markdown to add a Dokploy deployment badge:</p>
             <div class="bg-muted p-3 rounded-md border text-xs font-mono break-all text-primary">
-              [![Deploy with Dokploy](https://img.shields.io/badge/Deploy_with-Dokploy-blue?logo=docker)]({{ config.public.baseUrl }}{{ owner }}/{{ repo }})
+              [![Deploy with Dokploy](https://img.shields.io/badge/Deploy_with-Dokploy-black)]({{ config.public.baseUrl }}{{ owner }}/{{ repo }})
             </div>
           </CardContent>
         </Card>

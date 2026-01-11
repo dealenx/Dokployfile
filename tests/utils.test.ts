@@ -85,4 +85,20 @@ describe("Schema Utils", () => {
       expect(result.data.template.compose).toBe("dokploy/compose.yml");
     }
   });
+
+  it("should validate Dokployfile with links", () => {
+    const valid = {
+      version: "1",
+      meta: {
+        slug: "test",
+        name: "Test App",
+        version: "1.0.0",
+        links: {
+          github: "https://github.com/dealenx/camo-rs-service",
+        },
+      },
+    };
+    const result = DokployfileSchema.safeParse(valid);
+    expect(result.success).toBe(true);
+  });
 });
