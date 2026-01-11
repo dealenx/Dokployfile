@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Loader2, AlertTriangle, Link, XCircle, Info, Copy, Globe, FileCode, Check } from 'lucide-vue-next'
+import { Loader2, AlertTriangle, Link, XCircle, Info, Copy, Globe, FileCode, Check, ChevronLeft } from 'lucide-vue-next'
 
 const route = useRoute();
 const owner = computed(() => route.params.owner as string);
@@ -24,6 +24,15 @@ onMounted(() => {
 
 <template>
   <div class="max-w-5xl mx-auto py-10 px-4">
+    <div class="mb-8">
+      <NuxtLink to="/">
+        <Button variant="ghost" class="gap-2 -ml-4 text-muted-foreground hover:text-foreground">
+          <ChevronLeft class="w-4 h-4" />
+          Back to Home
+        </Button>
+      </NuxtLink>
+    </div>
+
     <Card v-if="loading" class="text-center py-20 flex flex-col items-center">
       <Loader2 class="animate-spin w-10 h-10 mb-4 opacity-50" />
       <p>Fetching template from GitHub...</p>
