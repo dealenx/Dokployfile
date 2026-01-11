@@ -4,7 +4,7 @@ import tailwindcss from "@tailwindcss/vite";
 export default defineNuxtConfig({
   ssr: false,
   app: {
-    baseURL: "/dokployfile/",
+    baseURL: "/Dokployfile/",
   },
   compatibilityDate: "2025-07-15",
   devtools: { enabled: true },
@@ -31,7 +31,7 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      baseUrl: "https://dealenx.github.io/dokployfile/", // Adjust to your actual URL
+      baseUrl: "https://dealenx.github.io/Dokployfile/", // Adjust to your actual URL
     },
   },
 });

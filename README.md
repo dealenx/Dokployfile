@@ -6,17 +6,17 @@ A browser-based service to generate Dokploy template import payloads from GitHub
 
 1.  Add a `Dokployfile.yml` to the root of your repository.
 2.  Add your `docker-compose.yml` and `template.toml`.
-3.  Go to `https://dealenx.github.io/dokployfile/your-username/your-repo` to get your import string.
+3.  Go to `https://dealenx.github.io/Dokployfile/your-username/your-repo` to get your import string.
 4.  Optionally add a badge to your README:
 
 ```markdown
-[![Deploy with Dokploy](https://img.shields.io/badge/Deploy_with-Dokploy-blue?logo=docker)](https://dealenx.github.io/dokployfile/your-username/your-repo)
+[![Deploy with Dokploy](https://img.shields.io/badge/Deploy_with-Dokploy-blue?logo=docker)](https://dealenx.github.io/Dokployfile/your-username/your-repo)
 ```
 
 ## Dokployfile.yml Format
 
 ```yaml
-# yaml-language-server: $schema=https://dealenx.github.io/dokployfile/schema.json
+# yaml-language-server: $schema=https://dealenx.github.io/Dokployfile/schema.json
 version: "1"
 meta:
   slug: "my-app"
