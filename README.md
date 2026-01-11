@@ -32,6 +32,29 @@ template:
   config: "template.toml"
 ```
 
+## Example
+
+You can find a real-world example here: [dokployfile-template-databasus](https://github.com/dealenx/dokployfile-template-databasus)
+
+**Dokployfile.yml**
+
+```yaml
+version: "1"
+meta:
+  slug: "databasus"
+  name: "Databasus"
+  version: "1.0.0"
+  description: "PostgreSQL backup tool with MySQL and MongoDB support"
+  logo: "postgresus.svg"
+  tags: ["PostgreSQL", "backup", "tool", "MySQL"]
+  links:
+    website: "https://databasus.com"
+    github: "https://github.com/databasus/databasus"
+template:
+  compose: "docker-compose.yml"
+  config: "template.toml"
+```
+
 ## Development
 
 ```bash
