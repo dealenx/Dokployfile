@@ -136,6 +136,22 @@ onMounted(() => {
         </div>
       </div>
 
+      <!-- How to deploy guide -->
+      <div class="bg-primary/5 border border-primary/20 rounded-xl p-6 space-y-4">
+        <div class="flex items-center gap-2 text-primary font-bold">
+          <Info class="w-5 h-5" />
+          <span>How to use this template</span>
+        </div>
+        <ol class="space-y-3 text-sm list-decimal list-inside text-muted-foreground">
+          <li>Click the <strong>Copy Button</strong> in the Base64 Configuration section above.</li>
+          <li>Go to your Dokploy instance and <strong>create a new Compose Service</strong>.</li>
+          <li>Navigate to the <strong>Advanced</strong> section and scroll down to <strong>Import</strong>.</li>
+          <li><strong>Paste the Base64 value</strong> into the input field and click <strong>Import</strong>.</li>
+          <li>Verify the details (Compose File, Environment Variables, etc.) in the modal.</li>
+          <li>Click <strong>Deploy</strong> and wait for the process to finish.</li>
+        </ol>
+      </div>
+
       <!-- File TABS Section -->
       <Tabs v-model="activeTab" class="w-full">
         <TabsList class="grid w-full max-w-md grid-cols-2 bg-muted/50 p-1">

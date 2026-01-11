@@ -83,6 +83,22 @@ const { copy, copied } = useClipboard();
       </CardContent>
     </Card>
 
+    <!-- How to deploy guide -->
+    <div v-if="base64" class="mt-8 bg-primary/5 border border-primary/20 rounded-xl p-6 space-y-4">
+      <div class="flex items-center gap-2 text-primary font-bold">
+        <Info class="w-5 h-5" />
+        <span>How to use this template</span>
+      </div>
+      <ol class="space-y-3 text-sm list-decimal list-inside text-muted-foreground">
+        <li>Click the <strong>Copy Button</strong> in the Generated Payload section above.</li>
+        <li>Go to your Dokploy instance and <strong>create a new Compose Service</strong>.</li>
+        <li>Navigate to the <strong>Advanced</strong> section and scroll down to <strong>Import</strong>.</li>
+        <li><strong>Paste the Base64 value</strong> into the input field and click <strong>Import</strong>.</li>
+        <li>Verify the details (Compose File, Environment Variables, etc.) in the modal.</li>
+        <li>Click <strong>Deploy</strong> and wait for the process to finish.</li>
+      </ol>
+    </div>
+
     <div v-if="lintResults.length > 0" class="mt-8">
       <h3 class="font-bold mb-2">Dokploy Recommendations</h3>
       <ul class="space-y-2">

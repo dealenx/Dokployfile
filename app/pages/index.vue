@@ -122,28 +122,68 @@ function handleGenerate() {
     <div class="space-y-12">
       <h2 class="text-3xl font-bold text-center">How to use</h2>
       
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
         <div class="space-y-2">
           <Badge variant="secondary" class="px-3 py-1 text-sm font-semibold">Step 1</Badge>
-          <h3 class="font-bold text-lg">Add Dokployfile</h3>
+          <h3 class="font-bold text-lg">Generate Template</h3>
           <p class="text-sm text-muted-foreground">
-            Add a <code class="bg-muted px-1 rounded">Dokployfile.yml</code> to your repository root to define metadata like name, logo, and tags.
+            Enter your GitHub repository or use the Manual Generator to create your template configuration.
           </p>
         </div>
         <div class="space-y-2">
           <Badge variant="secondary" class="px-3 py-1 text-sm font-semibold">Step 2</Badge>
-          <h3 class="font-bold text-lg">Link your Repo</h3>
+          <h3 class="font-bold text-lg">Copy Base64</h3>
           <p class="text-sm text-muted-foreground">
-            Use this service to generate a direct link or a badge for your repository README.
+            Click on the Template Card, and click the Copy Button in the Base64 Configuration section.
           </p>
         </div>
         <div class="space-y-2">
           <Badge variant="secondary" class="px-3 py-1 text-sm font-semibold">Step 3</Badge>
           <h3 class="font-bold text-lg">Import in Dokploy</h3>
           <p class="text-sm text-muted-foreground">
-            Users can copy the generated Base64 and paste it into Dokploy's "Import" section.
+            In Dokploy, create a Compose Service, go to <strong>Advanced</strong> -> <strong>Import</strong> and paste the Base64.
           </p>
         </div>
+        <div class="space-y-2">
+          <Badge variant="secondary" class="px-3 py-1 text-sm font-semibold">Step 4</Badge>
+          <h3 class="font-bold text-lg">Deploy</h3>
+          <p class="text-sm text-muted-foreground">
+            Verify the details in the modal, click <strong>Import</strong>, and then <strong>Deploy</strong> to finish.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Useful Materials -->
+    <div class="mt-20 pt-10 border-t">
+      <h2 class="text-2xl font-bold mb-6">Useful Materials</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <a 
+          href="https://github.com/Dokploy/templates" 
+          target="_blank"
+          class="flex items-center gap-3 p-4 rounded-xl border bg-card hover:border-primary transition-colors group"
+        >
+          <div class="p-2 rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+            <Globe class="w-5 h-5" />
+          </div>
+          <div>
+            <div class="font-bold">Official Templates</div>
+            <p class="text-sm text-muted-foreground">Explore the official Dokploy templates repository.</p>
+          </div>
+        </a>
+        <a 
+          href="https://docs.dokploy.com/docs/core/templates" 
+          target="_blank"
+          class="flex items-center gap-3 p-4 rounded-xl border bg-card hover:border-primary transition-colors group"
+        >
+          <div class="p-2 rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+            <FileText class="w-5 h-5" />
+          </div>
+          <div>
+            <div class="font-bold">Documentation</div>
+            <p class="text-sm text-muted-foreground">Learn how to create and manage templates in Dokploy.</p>
+          </div>
+        </a>
       </div>
     </div>
   </div>
