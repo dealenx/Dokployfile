@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Copy, Check, XCircle, Info, ArrowLeft, HelpCircle, Database, ExternalLink } from 'lucide-vue-next'
+import { Copy, Check, XCircle, Info, ArrowLeft, HelpCircle, Database, ExternalLink, Rocket, LayoutGrid, Terminal, FileCheck } from 'lucide-vue-next'
 
 const compose = ref('');
 const config = ref('');
@@ -46,7 +46,7 @@ host = "\${main_domain}"`
   grafana: {
     name: 'Grafana',
     compose: `version: "3.8"
-    
+
 services:
   grafana:
     image: grafana/grafana-enterprise:9.5.20
@@ -217,51 +217,88 @@ const { copy, copied } = useClipboard();
         />
       </section>
 
-      <section class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div class="space-y-4">
-          <h3 class="font-bold text-lg flex items-center gap-2">
-            <Info class="w-5 h-5 text-primary" />
-            Deployment Guide
+      <section class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+        <div class="lg:col-span-2 space-y-6">
+          <h3 class="font-bold text-xl flex items-center gap-2">
+            <Rocket class="w-6 h-6 text-primary" />
+            Launch Instructions
           </h3>
-          <Accordion type="single" collapsible class="w-full">
-            <AccordionItem value="step-1">
-              <AccordionTrigger>1. Copy the payload</AccordionTrigger>
-              <AccordionContent>
-                Click the "Copy Payload" button above to get the Base64 encoded string containing your configuration.
-              </AccordionContent>
-            </AccordionItem>
-            <AccordionItem value="step-2">
-              <AccordionTrigger>2. Go to Dokploy</AccordionTrigger>
-              <AccordionContent>
-                Open your Dokploy instance, navigate to the project where you want to deploy, and choose "Compose Service".
-              </AccordionContent>
-            </AccordionItem>
-            <AccordionItem value="step-3">
-              <AccordionTrigger>3. Import Template</AccordionTrigger>
-              <AccordionContent>
-                Go to the "Advanced" tab, find the "Import" section, and paste the payload into the field. Click "Import".
-              </AccordionContent>
-            </AccordionItem>
-            <AccordionItem value="step-4">
-              <AccordionTrigger>4. Deploy</AccordionTrigger>
-              <AccordionContent>
-                Verify the generated compose file and environment variables, then click "Deploy" to start your application.
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
+          
+          <div class="relative space-y-8 before:absolute before:inset-0 before:ml-5 before:-translate-x-px before:h-full before:w-0.5 before:bg-gradient-to-b before:from-primary/50 before:via-border before:to-transparent">
+            <!-- Step 1 -->
+            <div class="relative flex items-start gap-6 group">
+              <div class="absolute left-0 flex items-center justify-center w-10 h-10 rounded-full bg-background border-2 border-primary text-primary font-bold shadow-sm transition-transform group-hover:scale-110">
+                1
+              </div>
+              <div class="pl-14">
+                <h4 class="font-bold text-foreground flex items-center gap-2">
+                  Copy the Payload 
+                  <LayoutGrid class="w-4 h-4 text-muted-foreground/50" />
+                </h4>
+                <p class="text-sm text-muted-foreground leading-relaxed mt-1">
+                  Click the <strong class="text-foreground">"Copy Payload"</strong> button above. This encodes your Compose and TOML files into a single Base64 string that Dokploy understands.
+                </p>
+              </div>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="relative flex items-start gap-6 group">
+              <div class="absolute left-0 flex items-center justify-center w-10 h-10 rounded-full bg-background border-2 border-border text-muted-foreground font-bold shadow-sm group-hover:border-primary group-hover:text-primary transition-colors">
+                2
+              </div>
+              <div class="pl-14">
+                <h4 class="font-bold text-foreground flex items-center gap-2">
+                  Navigate to Dokploy
+                  <Terminal class="w-4 h-4 text-muted-foreground/50" />
+                </h4>
+                <p class="text-sm text-muted-foreground leading-relaxed mt-1">
+                  Open your Dokploy dashboard, go to your project, and click <strong class="text-foreground">"Create Service"</strong> → <strong class="text-foreground">"Compose"</strong>.
+                </p>
+              </div>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="relative flex items-start gap-6 group">
+              <div class="absolute left-0 flex items-center justify-center w-10 h-10 rounded-full bg-background border-2 border-border text-muted-foreground font-bold shadow-sm group-hover:border-primary group-hover:text-primary transition-colors">
+                3
+              </div>
+              <div class="pl-14">
+                <h4 class="font-bold text-foreground flex items-center gap-2">
+                  Import Template
+                  <FileCheck class="w-4 h-4 text-muted-foreground/50" />
+                </h4>
+                <p class="text-sm text-muted-foreground leading-relaxed mt-1">
+                  In the service creation modal, find the <strong class="text-foreground">"Import"</strong> section. Paste the Base64 string into the input and click <strong class="text-foreground">"Import"</strong>.
+                </p>
+              </div>
+            </div>
+
+            <!-- Step 4 -->
+            <div class="relative flex items-start gap-6 group">
+              <div class="absolute left-0 flex items-center justify-center w-10 h-10 rounded-full bg-primary text-primary-foreground font-bold shadow-lg shadow-primary/20">
+                4
+              </div>
+              <div class="pl-14">
+                <h4 class="font-bold text-foreground">Deploy Application</h4>
+                <p class="text-sm text-muted-foreground leading-relaxed mt-1">
+                  Review the automatically populated settings and environment variables, then click <strong class="text-foreground">"Deploy"</strong>. Your stack is ready!
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div v-if="lintResults.length > 0" class="space-y-4">
-          <h3 class="font-bold text-lg flex items-center gap-2">
-            <Check class="w-5 h-5 text-green-500" />
-            Recommendations
+        <div v-if="lintResults.length > 0" class="space-y-6">
+          <h3 class="font-bold text-xl flex items-center gap-2">
+            <Check class="w-6 h-6 text-green-500" />
+            Checks
           </h3>
-          <div class="space-y-3">
-            <Alert v-for="(lint, i) in lintResults" :key="i" :variant="lint.level === 'error' ? 'destructive' : 'default'">
+          <div class="space-y-4">
+            <Alert v-for="(lint, i) in lintResults" :key="i" :variant="lint.level === 'error' ? 'destructive' : 'default'" class="border-2 shadow-sm">
               <XCircle v-if="lint.level === 'error'" class="w-4 h-4" />
               <Info v-else class="w-4 h-4" />
-              <AlertTitle class="capitalize">{{ lint.level }}</AlertTitle>
-              <AlertDescription>
+              <AlertTitle class="capitalize font-bold">{{ lint.level }}</AlertTitle>
+              <AlertDescription class="text-xs">
                 {{ lint.message }}
               </AlertDescription>
             </Alert>
