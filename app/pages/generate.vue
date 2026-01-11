@@ -3,6 +3,21 @@ import { Copy, Check, XCircle, Info, ArrowLeft } from 'lucide-vue-next'
 
 const compose = ref('');
 const config = ref('');
+
+useSeoMeta({
+  title: 'Manual Payload Generator - Dokploy Template Generator',
+  ogTitle: 'Manual Payload Generator',
+  description: 'Create a Dokploy import payload manually by pasting your docker-compose.yml and template.toml content.',
+  ogDescription: 'Create a Dokploy import payload manually by pasting your docker-compose.yml and template.toml content.',
+  twitterCard: 'summary_large_image',
+})
+
+useHead({
+  link: [
+    { rel: 'canonical', href: 'https://dealenx.github.io/Dokployfile/generate' }
+  ]
+})
+
 const base64 = computed(() => {
   if (!compose.value) return '';
   try {

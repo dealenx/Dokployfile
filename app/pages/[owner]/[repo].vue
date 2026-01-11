@@ -6,6 +6,23 @@ const owner = computed(() => route.params.owner as string);
 const repo = computed(() => route.params.repo as string);
 const branch = computed(() => (route.query.branch as string) || undefined);
 
+useSeoMeta({
+  title: () => `${owner.value}/${repo.value} - Dokploy Template Generator`,
+  ogTitle: () => `${owner.value}/${repo.value} - Dokploy Template Generator`,
+  description: () => `Generate Dokploy import payload for repository ${owner.value}/${repo.value}${branch.value ? ` (branch: ${branch.value})` : ''}.`,
+  ogDescription: () => `Generate Dokploy import payload for repository ${owner.value}/${repo.value}${branch.value ? ` (branch: ${branch.value})` : ''}.`,
+  twitterCard: 'summary_large_image',
+})
+
+useHead({
+  link: [
+    { 
+      rel: 'canonical', 
+      href: () => `https://dealenx.github.io/Dokployfile/${owner.value}/${repo.value}${branch.value ? `?branch=${branch.value}` : ''}` 
+    }
+  ]
+})
+
 const { loading, error, result, processRepository } = useGithubWorker();
 const { copy, copied } = useClipboard();
 const config = useRuntimeConfig();

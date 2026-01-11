@@ -4,6 +4,39 @@ import { Globe, FileText } from 'lucide-vue-next'
 const repoInput = ref('');
 const router = useRouter();
 
+useSeoMeta({
+  title: 'Dokploy Template Generator - GitHub and Manual Payload Creation',
+  ogTitle: 'Dokploy Template Generator',
+  description: 'Generate the Base64 import string for your Dokploy templates directly from GitHub or manually.',
+  ogDescription: 'Generate the Base64 import string for your Dokploy templates directly from GitHub or manually.',
+  ogImage: 'https://dealenx.github.io/Dokployfile/og-image.png', // Replace with actual image url if exists
+  twitterCard: 'summary_large_image',
+})
+
+useHead({
+  link: [
+    { rel: 'canonical', href: 'https://dealenx.github.io/Dokployfile/' }
+  ],
+  script: [
+    {
+      type: 'application/ld+json',
+      children: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'WebApplication',
+        'name': 'Dokploy Template Generator',
+        'description': 'Generate the Base64 import string for your Dokploy templates directly from GitHub or manually.',
+        'url': 'https://dealenx.github.io/Dokployfile/',
+        'applicationCategory': 'DeveloperApplication',
+        'operatingSystem': 'Any',
+        'author': {
+          '@type': 'Organization',
+          'name': 'Dokploy'
+        }
+      })
+    }
+  ]
+})
+
 function handleGenerate() {
   if (!repoInput.value) return;
   
