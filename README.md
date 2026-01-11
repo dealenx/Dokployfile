@@ -54,8 +54,8 @@ sequenceDiagram
 ## Dokployfile.yml Format
 
 ```yaml
-# yaml-language-server: $schema=https://dealenx.github.io/Dokployfile/schema.json
 version: "1"
+
 meta:
   slug: "my-app"
   name: "My Awesome App"
