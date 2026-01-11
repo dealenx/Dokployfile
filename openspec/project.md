@@ -2,43 +2,57 @@
 
 ## Purpose
 
-[Describe your project's purpose and goals]
+A browser-based service to generate Dokploy template import payloads from GitHub repositories.
 
 ## Tech Stack
 
-- Nuxt 4
-- TypeScript
-- Shadcn Vue (UI)
-- Tailwind CSS v4
+- Nuxt 4 (Framework)
+- Vue 3 (Composition API)
+- TypeScript (Language)
+- Shadcn Vue (UI Components)
+- Radix Vue (Primitives)
+- Tailwind CSS v4 (Styling)
 - Lucide Vue Next (Icons)
 - Vitest (Testing)
+- Zod & Vee-validate (Validation)
+- smol-toml / yaml (Data formats)
 
 ## Project Conventions
 
 ### Code Style
 
-[Describe your code style preferences, formatting rules, and naming conventions]
+- Use Vue 3 Script Setup with TypeScript.
+- Follow Shadcn Vue patterns for UI components.
+- Use Tailwind CSS for almost all styling.
+- Keep components small and focused in `app/components`.
 
 ### Architecture Patterns
 
-[Document your architectural decisions and patterns]
+- Pages are located in `app/pages`.
+- Reusable UI components in `app/components/ui`.
+- Business logic in `app/utils` and `app/composables`.
+- Heavy processing (like GitHub interactions) moved to Workers in `app/workers` and accessed via composables in `app/composables` (e.g., `useGithubWorker.ts`).
 
 ### Testing Strategy
 
-[Explain your testing approach and requirements]
+- Use Vitest for unit and integration tests.
+- Tests are located in the `tests/` directory.
 
 ### Git Workflow
 
-[Describe your branching strategy and commit conventions]
+- Use OpenSpec for all feature development.
+- Kebab-case for branch and change IDs.
 
 ## Domain Context
 
-[Add domain-specific knowledge that AI assistants need to understand]
+- **Dokploy**: An open-source alternative to Heroku/Vercel/Coolify.
 
 ## Important Constraints
 
-[List any technical, business, or regulatory constraints]
+- Must produce valid YAML/JSON according to Dokploy schema.
+- Must be performant and responsive.
 
 ## External Dependencies
 
-[Document key external services, APIs, or systems]
+- GitHub API (for fetching templates/repos)
+- Dokploy Schema (external reference)

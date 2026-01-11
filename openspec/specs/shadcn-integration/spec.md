@@ -1,7 +1,8 @@
-# Spec: Shadcn Integration
+# shadcn-integration Specification
 
-## ADDED Requirements
-
+## Purpose
+TBD - created by archiving change migrate-ui-to-shadcn. Update Purpose after archive.
+## Requirements
 ### Requirement: UI Component Framework
 
 The project MUST use Shadcn Vue as the primary UI component framework.
@@ -31,3 +32,4 @@ The `@nuxt/ui` module MUST NOT be present in the project configuration or depend
 Given a completed migration
 When I check `package.json` and `nuxt.config.ts`
 Then `@nuxt/ui` SHOULD NOT be listed.
+
