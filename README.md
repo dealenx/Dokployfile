@@ -2,6 +2,8 @@
 
 A browser-based service to generate Dokploy template import payloads from GitHub repositories.
 
+The `Dokployfile.yml` serves as a standard, recognizable configuration file. Its presence in a repository immediately signals that the project is deploy-ready with Dokploy and contains a pre-configured template.
+
 ## How to use
 
 1.  Add a `Dokployfile.yml` to the root of your repository.
