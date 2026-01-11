@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 export const DokployfileSchema = z.object({
   version: z.literal("1"),
@@ -9,13 +9,18 @@ export const DokployfileSchema = z.object({
     description: z.string().optional(),
     logo: z.string().optional().describe("Path or URL"),
     tags: z.array(z.string()).optional(),
-    links: z.record(z.string().url()).optional().describe("Matches meta.json { github: '...', website: '...' }")
+    links: z
+      .record(z.string().url())
+      .optional()
+      .describe("Matches meta.json { github: '...', website: '...' }"),
   }),
-  template: z.object({
-    compose: z.string().default("docker-compose.yml"),
-    config: z.string().default("template.toml"),
-    instructions: z.string().optional()
-  })
+  template: z
+    .object({
+      compose: z.string().default("docker-compose.yml"),
+      config: z.string().default("template.toml"),
+      instructions: z.string().optional(),
+    })
+    .default({}),
 });
 
 export type Dokployfile = z.infer<typeof DokployfileSchema>;

@@ -18,33 +18,38 @@ self.onmessage = async (e: MessageEvent) => {
     // 1. Try to find Dokployfile.yml on available branches
     for (const b of branchesToTry) {
       try {
+        console.log(`Trying to fetch Dokployfile.yml from branch: ${b}`);
         const raw = await fetchGithubFile(owner, repo, b, "Dokployfile.yml");
+        console.log("Found Dokployfile.yml, parsing...");
         const parsed = parseYaml(raw);
         const validation = DokployfileSchema.safeParse(parsed);
         if (validation.success) {
           dokployfile = validation.data;
           dokployfileRaw = raw;
           branch = b;
+          console.log("Dokployfile.yml successfully validated:", dokployfile);
           break;
         } else {
-          console.warn(
+          console.error(
             `Dokployfile.yml validation failed on branch ${b}`,
-            validation.error
+            validation.error.format()
           );
         }
       } catch (err) {
-        // Continue to next branch
+        console.log(`Dokployfile.yml not found on branch ${b}`);
       }
     }
 
     // 2. If no branch had a valid Dokployfile.yml, try to find the correct branch using a known file
     if (!dokployfile) {
+      console.log("No valid Dokployfile.yml found, using defaults...");
       if (!preferredBranch) {
         for (const b of ["main", "master"]) {
           try {
             // Try to fetch compose file directly as a health check for the branch
             await fetchGithubFile(owner, repo, b, "docker-compose.yml");
             branch = b;
+            console.log(`Defaulting to branch: ${branch}`);
             break;
           } catch (err) {}
         }
@@ -68,9 +73,16 @@ self.onmessage = async (e: MessageEvent) => {
     const composePath = dokployfile.template.compose;
     const configPath = dokployfile.template.config;
 
+    console.log(
+      `Fetching template files: compose=${composePath}, config=${configPath}`
+    );
+
     const [compose, configRaw] = await Promise.all([
       fetchGithubFile(owner, repo, branch, composePath),
-      fetchGithubFile(owner, repo, branch, configPath).catch(() => ""),
+      fetchGithubFile(owner, repo, branch, configPath).catch((err) => {
+        console.warn(`Optional config file not found: ${configPath}`, err);
+        return "";
+      }),
     ]);
 
     const base64 = generateDokployPayload(compose, configRaw);

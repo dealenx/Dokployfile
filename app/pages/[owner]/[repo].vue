@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Loader2, AlertTriangle, Link, XCircle, Info, Copy } from 'lucide-vue-next'
+import { Loader2, AlertTriangle, Link, XCircle, Info, Copy, Globe, FileCode, Check } from 'lucide-vue-next'
 
 const route = useRoute();
 const owner = computed(() => route.params.owner as string);
@@ -10,6 +10,11 @@ const { loading, error, result, processRepository } = useGithubWorker();
 const { copy, copied } = useClipboard();
 const config = useRuntimeConfig();
 
+const activeTab = ref('compose');
+
+const { copy: copyCompose, copied: copiedCompose } = useClipboard();
+const { copy: copyConfig, copied: copiedConfig } = useClipboard();
+
 onMounted(() => {
   if (owner.value && repo.value) {
     processRepository(owner.value, repo.value, branch.value);
@@ -18,7 +23,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="max-w-4xl mx-auto py-10 px-4">
+  <div class="max-w-5xl mx-auto py-10 px-4">
     <Card v-if="loading" class="text-center py-20 flex flex-col items-center">
       <Loader2 class="animate-spin w-10 h-10 mb-4 opacity-50" />
       <p>Fetching template from GitHub...</p>
@@ -35,90 +40,155 @@ onMounted(() => {
       </AlertDescription>
     </Alert>
 
-    <div v-else-if="result" class="space-y-6">
-      <div class="flex items-center gap-4">
-        <Avatar v-if="result.dokployfile.meta.logo" class="w-20 h-20">
+    <div v-else-if="result" class="space-y-8">
+      <!-- Header Section -->
+      <div class="flex flex-col md:flex-row md:items-center gap-6">
+        <Avatar v-if="result.dokployfile.meta.logo" class="w-24 h-24 rounded-lg border">
           <AvatarImage
             :src="result.dokployfile.meta.logo.startsWith('http') 
               ? result.dokployfile.meta.logo 
               : `https://raw.githubusercontent.com/${owner}/${repo}/${result.branch}/${result.dokployfile.meta.logo}`"
             :alt="result.dokployfile.meta.name"
           />
-          <AvatarFallback>{{ result.dokployfile.meta.name.substring(0, 2).toUpperCase() }}</AvatarFallback>
+          <AvatarFallback class="rounded-lg">{{ result.dokployfile.meta.name.substring(0, 2).toUpperCase() }}</AvatarFallback>
         </Avatar>
-        <div>
-          <h1 class="text-3xl font-bold">{{ result.dokployfile.meta.name }}</h1>
-          <p class="text-muted-foreground">{{ result.dokployfile.meta.description }}</p>
+        <div class="space-y-2">
+          <h1 class="text-4xl font-bold tracking-tight">{{ result.dokployfile.meta.name }}</h1>
+          <div class="flex items-center gap-4 text-sm text-muted-foreground">
+            <span class="font-mono bg-muted px-2 py-0.5 rounded">{{ result.dokployfile.meta.version }}</span>
+            <div class="flex gap-3">
+              <a :href="`https://github.com/${owner}/${repo}`" target="_blank" class="hover:text-primary flex items-center gap-1 transition-colors">
+                <Globe class="w-4 h-4" /> GitHub
+              </a>
+              <template v-if="result.dokployfile.meta.links">
+                <a 
+                  v-for="(url, label) in result.dokployfile.meta.links"
+                  :key="label"
+                  :href="url"
+                  target="_blank"
+                  class="hover:text-primary flex items-center gap-1 transition-colors"
+                >
+                  <Link class="w-4 h-4" /> {{ label }}
+                </a>
+              </template>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div class="flex gap-2 flex-wrap">
-        <Badge v-for="tag in result.dokployfile.meta.tags" :key="tag" variant="secondary">
-          {{ tag }}
-        </Badge>
-        <Badge variant="outline" class="text-muted-foreground">v{{ result.dokployfile.meta.version }}</Badge>
+      <!-- Description & Tags -->
+      <div class="space-y-4">
+        <p class="text-lg text-muted-foreground leading-relaxed">{{ result.dokployfile.meta.description }}</p>
+        <div class="flex gap-2 flex-wrap">
+          <Badge v-for="tag in result.dokployfile.meta.tags" :key="tag" variant="secondary" class="px-3">
+            {{ tag }}
+          </Badge>
+        </div>
       </div>
 
-      <div v-if="result.dokployfile.meta.links" class="flex gap-4">
-        <Button
-          v-for="(url, label) in result.dokployfile.meta.links"
-          :key="label"
-          variant="ghost"
-          size="sm"
-          as-child
-        >
-          <a :href="url" target="_blank" class="flex items-center gap-2">
-            <Link class="w-4 h-4" />
-            {{ label }}
-          </a>
-        </Button>
-      </div>
-
-      <Card>
-        <CardHeader>
-          <div class="flex justify-between items-center">
-            <CardTitle>Import Payload</CardTitle>
-            <Button
-              @click="copy(result.base64)"
-              size="sm"
-              class="gap-2"
-            >
-              <Copy class="w-4 h-4" />
-              {{ copied ? 'Copied!' : 'Copy for Dokploy' }}
-            </Button>
+      <!-- Base64 Section -->
+      <div class="space-y-3">
+        <div>
+          <h2 class="text-2xl font-bold">Base64 Configuration</h2>
+          <p class="text-sm text-muted-foreground">Encoded template file</p>
+        </div>
+        
+        <div class="relative group">
+          <div class="bg-muted/50 font-mono text-xs rounded-xl p-4 pr-14 break-all border overflow-hidden max-h-24">
+            {{ result.base64 }}
           </div>
-        </CardHeader>
-        <CardContent>
-          <Textarea
-            readonly
-            :model-value="result.base64"
-            class="font-mono text-xs h-32"
-          />
-        </CardContent>
-      </Card>
+          <Button
+            @click="copy(result.base64)"
+            size="icon"
+            variant="secondary"
+            class="absolute right-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity"
+          >
+            <Check v-if="copied" class="w-4 h-4" />
+            <Copy v-else class="w-4 h-4" />
+          </Button>
+        </div>
+      </div>
 
-      <div v-if="result.lintResults.length > 0">
-        <h3 class="font-bold mb-2">Dokploy Recommendations</h3>
-        <ul class="space-y-2">
-          <li v-for="(lint, i) in result.lintResults" :key="i" class="flex gap-2 text-sm">
-            <XCircle v-if="lint.level === 'error'" class="w-4 h-4 text-destructive" />
-            <Info v-else class="w-4 h-4 text-blue-500" />
+      <!-- File TABS Section -->
+      <Tabs v-model="activeTab" class="w-full">
+        <TabsList class="grid w-full max-w-md grid-cols-2 bg-muted/50 p-1">
+          <TabsTrigger value="compose" class="rounded-md">
+            Docker Compose
+          </TabsTrigger>
+          <TabsTrigger value="config" class="rounded-md">
+            Configuration
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="compose" class="mt-6">
+          <div class="space-y-2">
+            <div class="flex justify-between items-end">
+              <div>
+                <h3 class="text-xl font-bold">Docker Compose</h3>
+                <p class="text-sm text-muted-foreground">docker-compose.yml</p>
+              </div>
+              <Button size="sm" variant="outline" class="gap-2" @click="copyCompose(result.compose)">
+                <Check v-if="copiedCompose" class="w-4 h-4" />
+                <Copy v-else class="w-4 h-4" />
+                Copy
+              </Button>
+            </div>
+            <div class="relative mt-2 border rounded-xl overflow-hidden bg-[#0d1117]">
+              <ScrollArea class="h-[500px] w-full">
+                <pre class="p-6 text-sm font-mono leading-relaxed text-gray-300"><code>{{ result.compose }}</code></pre>
+              </ScrollArea>
+            </div>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="config" class="mt-6">
+          <div class="space-y-2">
+            <div class="flex justify-between items-end">
+              <div>
+                <h3 class="text-xl font-bold">Configuration</h3>
+                <p class="text-sm text-muted-foreground">template.toml</p>
+              </div>
+              <Button size="sm" variant="outline" class="gap-2" @click="copyConfig(result.config)">
+                <Check v-if="copiedConfig" class="w-4 h-4" />
+                <Copy v-else class="w-4 h-4" />
+                Copy
+              </Button>
+            </div>
+            <div class="relative mt-2 border rounded-xl overflow-hidden bg-[#0d1117]">
+              <ScrollArea class="h-[500px] w-full">
+                <pre class="p-6 text-sm font-mono leading-relaxed text-gray-300"><code>{{ result.config || "# No configuration provided" }}</code></pre>
+              </ScrollArea>
+            </div>
+          </div>
+        </TabsContent>
+      </Tabs>
+
+      <!-- Recommendations -->
+      <div v-if="result.lintResults.length > 0" class="pt-8 border-top">
+        <h3 class="text-xl font-bold mb-4">Dokploy Recommendations</h3>
+        <ul class="space-y-3">
+          <li v-for="(lint, i) in result.lintResults" :key="i" class="flex gap-3 text-sm p-3 rounded-lg border bg-card">
+            <XCircle v-if="lint.level === 'error'" class="w-5 h-5 text-destructive shrink-0" />
+            <Info v-else class="w-5 h-5 text-blue-500 shrink-0" />
             <span>{{ lint.message }}</span>
           </li>
         </ul>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Add to your README</CardTitle>
-        </CardHeader>
-        <CardContent class="space-y-4">
-          <p class="text-sm text-muted-foreground">Copy this Markdown to add a Dokploy badge to your repository:</p>
-          <div class="bg-muted p-3 rounded-md relative group border">
-            <pre class="text-xs text-primary overflow-x-auto"><code>[![Deploy with Dokploy](https://img.shields.io/badge/Deploy_with-Dokploy-blue?logo=docker)]({{ config.public.baseUrl }}{{ owner }}/{{ repo }})</code></pre>
-          </div>
-        </CardContent>
-      </Card>
+      <!-- Badge Helper -->
+      <div class="pt-10">
+        <Card class="bg-muted/30 border-dashed">
+          <CardHeader>
+            <CardTitle class="text-lg">Add to your README</CardTitle>
+          </CardHeader>
+          <CardContent class="space-y-4">
+            <p class="text-sm text-muted-foreground">Copy this Markdown to add a Dokploy deployment badge:</p>
+            <div class="bg-muted p-3 rounded-md border text-xs font-mono break-all text-primary">
+              [![Deploy with Dokploy](https://img.shields.io/badge/Deploy_with-Dokploy-blue?logo=docker)]({{ config.public.baseUrl }}{{ owner }}/{{ repo }})
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   </div>
 </template>
