@@ -81,7 +81,12 @@ function handleGenerate() {
             Enter your GitHub repository to fetch <code class="bg-muted px-1 rounded">Dokployfile.yml</code>, <code class="bg-muted px-1 rounded">docker-compose.yml</code> and <code class="bg-muted px-1 rounded">template.toml</code>.
           </p>
           <div class="space-y-2">
-            <Label>Repository URL or owner/repo</Label>
+            <div class="flex items-center justify-between">
+              <Label>Repository URL or owner/repo</Label>
+              <NuxtLink to="/dealenx/dokployfile-template-databasus" class="text-xs text-primary hover:underline">
+                See Example
+              </NuxtLink>
+            </div>
             <div class="relative">
               <Input
                 v-model="repoInput"
