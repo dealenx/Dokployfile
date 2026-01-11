@@ -1,4 +1,4 @@
-# Dokploy Template Generator
+# Dokployfile Concept & Template Generator
 
 A browser-based service to generate Dokploy template import payloads from GitHub repositories.
 
