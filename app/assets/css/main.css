@@ -1,2 +1,21 @@
 @import "tailwindcss";
-@import "@nuxt/ui";
+
+@theme {
+  --color-background: #020817;
+  --color-foreground: #f8fafc;
+  --color-primary: #f8fafc;
+  --color-secondary: #1e293b;
+  --color-muted: #1e293b;
+  --color-accent: #1e293b;
+  --color-destructive: #7f1d1d;
+  --color-border: #1e293b;
+  --color-input: #1e293b;
+  --color-ring: #cbd5e1;
+}
+
+@layer base {
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+  }
+}

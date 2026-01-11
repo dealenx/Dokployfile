@@ -1,18 +1,12 @@
 {
   "servers": {
     "nuxt-ui": {
-      "command": "npx",
-      "args": [
-        "mcp-remote",
-        "https://ui.nuxt.com/mcp"
-      ]
+      "command": "pnpm",
+      "args": ["dlx", "mcp-remote", "https://ui.nuxt.com/mcp"]
     },
     "shadcnVue": {
-      "command": "npx",
-      "args": [
-        "shadcn-vue@latest",
-        "mcp"
-      ]
+      "command": "pnpm",
+      "args": ["dlx", "shadcn-vue@latest", "mcp"]
     }
   }
 }

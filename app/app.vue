@@ -1,6 +1,6 @@
 <template>
-  <UApp>
+  <div class="min-h-screen bg-background text-foreground">
     <NuxtRouteAnnouncer />
     <NuxtPage />
-  </UApp>
+  </div>
 </template>

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { Globe, FileText } from 'lucide-vue-next'
+
 const repoInput = ref('');
 const router = useRouter();
 
@@ -28,60 +30,60 @@ function handleGenerate() {
   <div class="max-w-4xl mx-auto py-20 px-4">
     <div class="text-center mb-16">
       <h1 class="text-5xl font-extrabold mb-4 tracking-tight">Dokploy Template Generator</h1>
-      <p class="text-xl text-gray-400 max-w-2xl mx-auto">
+      <p class="text-xl text-muted-foreground max-w-2xl mx-auto">
         Generate the Base64 import string for your Dokploy templates directly from GitHub or manually.
       </p>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-20">
-      <UCard class="flex flex-col h-full">
-        <template #header>
-          <div class="flex items-center gap-2">
-            <UIcon name="i-heroicons-globe-alt" class="text-primary" />
-            <h2 class="text-xl font-bold">From GitHub</h2>
-          </div>
-        </template>
-        <div class="space-y-4 flex-grow">
-          <p class="text-sm text-gray-500">
-            Enter your GitHub repository to fetch <code>Dokployfile.yml</code>, <code>docker-compose.yml</code> and <code>template.toml</code>.
+      <Card class="flex flex-col h-full">
+        <CardHeader>
+          <CardTitle class="flex items-center gap-2">
+            <Globe class="w-5 h-5 text-primary" />
+            <span>From GitHub</span>
+          </CardTitle>
+        </CardHeader>
+        <CardContent class="space-y-4 flex-grow">
+          <p class="text-sm text-muted-foreground">
+            Enter your GitHub repository to fetch <code class="bg-muted px-1 rounded">Dokployfile.yml</code>, <code class="bg-muted px-1 rounded">docker-compose.yml</code> and <code class="bg-muted px-1 rounded">template.toml</code>.
           </p>
-          <UFormGroup label="Repository URL or owner/repo">
-            <UInput
-              v-model="repoInput"
-              placeholder="e.g. Dokploy/templates"
-              class="w-full"
-              @keyup.enter="handleGenerate"
-            >
-              <template #trailing>
-                <UButton
-                  color="primary"
-                  variant="solid"
-                  size="sm"
-                  class="mr-1"
-                  @click="handleGenerate"
-                >
-                  Go
-                </UButton>
-              </template>
-            </UInput>
-          </UFormGroup>
-        </div>
-      </UCard>
-
-      <UCard class="flex flex-col h-full">
-        <template #header>
-          <div class="flex items-center gap-2">
-            <UIcon name="i-heroicons-document-text" class="text-primary" />
-            <h2 class="text-xl font-bold">Manual Generator</h2>
+          <div class="space-y-2">
+            <Label>Repository URL or owner/repo</Label>
+            <div class="relative">
+              <Input
+                v-model="repoInput"
+                placeholder="e.g. Dokploy/templates"
+                class="w-full pr-16"
+                @keyup.enter="handleGenerate"
+              />
+              <Button
+                size="sm"
+                class="absolute right-1 top-1 bottom-1"
+                @click="handleGenerate"
+              >
+                Go
+              </Button>
+            </div>
           </div>
-        </template>
-        <div class="space-y-4 flex-grow flex flex-col justify-between">
-          <p class="text-sm text-gray-500">
+        </CardContent>
+      </Card>
+
+      <Card class="flex flex-col h-full">
+        <CardHeader>
+          <CardTitle class="flex items-center gap-2">
+            <FileText class="w-5 h-5 text-primary" />
+            <span>Manual Generator</span>
+          </CardTitle>
+        </CardHeader>
+        <CardContent class="space-y-4 flex-grow flex flex-col justify-between">
+          <p class="text-sm text-muted-foreground">
             Don't have a repository yet? Paste your raw Compose and TOML content to get the Base64 payload instantly.
           </p>
-          <UButton to="/generate" color="neutral" variant="soft" block class="mt-4">Open Manual Generator</UButton>
-        </div>
-      </UCard>
+          <Button variant="secondary" class="mt-4 w-full" as-child>
+            <NuxtLink to="/generate">Open Manual Generator</NuxtLink>
+          </Button>
+        </CardContent>
+      </Card>
     </div>
 
     <div class="space-y-12">
@@ -89,23 +91,23 @@ function handleGenerate() {
       
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div class="space-y-2">
-          <UBadge color="primary" variant="subtle" size="lg">Step 1</UBadge>
-          <h3 class="font-bold">Add Dokployfile</h3>
-          <p class="text-sm text-gray-500">
-            Add a <code>Dokployfile.yml</code> to your repository root to define metadata like name, logo, and tags.
+          <Badge variant="secondary" class="px-3 py-1 text-sm font-semibold">Step 1</Badge>
+          <h3 class="font-bold text-lg">Add Dokployfile</h3>
+          <p class="text-sm text-muted-foreground">
+            Add a <code class="bg-muted px-1 rounded">Dokployfile.yml</code> to your repository root to define metadata like name, logo, and tags.
           </p>
         </div>
         <div class="space-y-2">
-          <UBadge color="primary" variant="subtle" size="lg">Step 2</UBadge>
-          <h3 class="font-bold">Link your Repo</h3>
-          <p class="text-sm text-gray-500">
+          <Badge variant="secondary" class="px-3 py-1 text-sm font-semibold">Step 2</Badge>
+          <h3 class="font-bold text-lg">Link your Repo</h3>
+          <p class="text-sm text-muted-foreground">
             Use this service to generate a direct link or a badge for your repository README.
           </p>
         </div>
         <div class="space-y-2">
-          <UBadge color="primary" variant="subtle" size="lg">Step 3</UBadge>
-          <h3 class="font-bold">Import in Dokploy</h3>
-          <p class="text-sm text-gray-500">
+          <Badge variant="secondary" class="px-3 py-1 text-sm font-semibold">Step 3</Badge>
+          <h3 class="font-bold text-lg">Import in Dokploy</h3>
+          <p class="text-sm text-muted-foreground">
             Users can copy the generated Base64 and paste it into Dokploy's "Import" section.
           </p>
         </div>
