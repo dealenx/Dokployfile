@@ -13,6 +13,44 @@ A browser-based service to generate Dokploy template import payloads from GitHub
 [![Deploy with Dokploy](https://img.shields.io/badge/Deploy_with-Dokploy-blue?logo=docker)](https://dealenx.github.io/Dokployfile/your-username/your-repo)
 ```
 
+## Workflows
+
+### Automated (GitHub)
+
+Best for public repositories. Just add a `Dokployfile.yml` and use the URL.
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant GitHub
+    participant Generator
+    participant Dokploy
+
+    User->>GitHub: Push Dokployfile.yml
+    User->>Generator: Open GitHub Repo URL
+    Generator->>GitHub: Fetch repository data
+    Generator-->>User: Show Base64 Payload
+    User->>Dokploy: Paste & Import Payload
+```
+
+### Manual (Editor)
+
+Best for private repositories or local testing. Paste your YAML directly into the [Generator](https://dealenx.github.io/Dokployfile/generate).
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant Editor
+    participant Generator
+    participant Dokploy
+
+    User->>Editor: Paste docker-compose.yml
+    User->>Editor: Paste template.toml
+    Editor->>Generator: Process inputs
+    Generator-->>User: Show Base64 Payload
+    User->>Dokploy: Paste & Import Payload
+```
+
 ## Dokployfile.yml Format
 
 ```yaml
@@ -30,6 +68,8 @@ meta:
 template:
   compose: "docker-compose.yml"
   config: "template.toml"
+
+> **Tip:** Files don't have to be in the root. You can specify relative paths (e.g., `deploy/docker-compose.yml`).
 ```
 
 ## Example
