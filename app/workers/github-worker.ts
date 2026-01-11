@@ -87,6 +87,18 @@ self.onmessage = async (e: MessageEvent) => {
 
     const base64 = generateDokployPayload(compose, configRaw);
     const lintResults = lintComposeFile(compose);
+    const logoPath = dokployfile.meta.logo;
+
+    if (logoPath && !logoPath.startsWith("http")) {
+      try {
+        await fetchGithubFile(owner, repo, branch, logoPath);
+      } catch (err) {
+        lintResults.push({
+          level: "error",
+          message: `Logo file not found at path: ${logoPath}`,
+        });
+      }
+    }
 
     self.postMessage({
       success: true,

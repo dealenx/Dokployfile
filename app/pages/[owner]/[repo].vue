@@ -43,14 +43,15 @@ onMounted(() => {
     <div v-else-if="result" class="space-y-8">
       <!-- Header Section -->
       <div class="flex flex-col md:flex-row md:items-center gap-6">
-        <Avatar v-if="result.dokployfile.meta.logo" class="w-24 h-24 rounded-lg border">
+        <Avatar v-if="result.dokployfile.meta.logo" class="w-24 h-24 rounded-xl border bg-card p-4">
           <AvatarImage
             :src="result.dokployfile.meta.logo.startsWith('http') 
               ? result.dokployfile.meta.logo 
-              : `https://raw.githubusercontent.com/${owner}/${repo}/${result.branch}/${result.dokployfile.meta.logo}`"
+              : `https://raw.githubusercontent.com/${owner}/${repo}/${result.branch}/${result.dokployfile.meta.logo.replace(/^\.?\//, '')}`"
             :alt="result.dokployfile.meta.name"
+            class="object-contain"
           />
-          <AvatarFallback class="rounded-lg">{{ result.dokployfile.meta.name.substring(0, 2).toUpperCase() }}</AvatarFallback>
+          <AvatarFallback class="rounded-xl text-2xl">{{ result.dokployfile.meta.name.substring(0, 2).toUpperCase() }}</AvatarFallback>
         </Avatar>
         <div class="space-y-2">
           <h1 class="text-4xl font-bold tracking-tight">{{ result.dokployfile.meta.name }}</h1>
@@ -58,7 +59,7 @@ onMounted(() => {
             <span class="font-mono bg-muted px-2 py-0.5 rounded">{{ result.dokployfile.meta.version }}</span>
             <div class="flex gap-3">
               <a :href="`https://github.com/${owner}/${repo}`" target="_blank" class="hover:text-primary flex items-center gap-1 transition-colors">
-                <Globe class="w-4 h-4" /> GitHub
+                <Globe class="w-4 h-4" /> Template source
               </a>
               <template v-if="result.dokployfile.meta.links">
                 <a 
