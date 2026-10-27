@@ -8,7 +8,7 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "schema": "tsx scripts/generate-schema.ts",
+    "schema": "bun scripts/generate-schema.ts",
     "test": "vitest run"
   },
   "dependencies": {
@@ -39,7 +39,6 @@
     "shadcn-vue": "^2.4.3",
     "tailwind-merge": "^3.4.0",
     "tailwindcss": "^4.1.18",
-    "tsx": "^4.21.0",
     "vitest": "^4.0.16"
   }
 }
