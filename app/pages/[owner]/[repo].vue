@@ -52,13 +52,13 @@ onMounted(() => {
       </NuxtLink>
     </div>
 
-    <Card v-if="loading" class="text-center py-20 flex flex-col items-center">
+    <Card v-if="loading && !result" class="text-center py-20 flex flex-col items-center">
       <Loader2 class="animate-spin w-10 h-10 mb-4 opacity-50" />
       <p>Fetching template from GitHub...</p>
     </Card>
 
     <Alert
-      v-else-if="error"
+      v-else-if="error && !result"
       variant="destructive"
     >
       <AlertTriangle class="h-4 w-4" />
@@ -69,6 +69,12 @@ onMounted(() => {
     </Alert>
 
     <div v-else-if="result" class="space-y-8">
+      <!-- Refreshing overlay (keep layout, no jumping) -->
+      <Transition name="fade">
+        <div v-if="loading" class="fixed inset-0 z-50 bg-background/60 backdrop-blur-sm flex items-center justify-center">
+          <Loader2 class="animate-spin w-8 h-8 opacity-50" />
+        </div>
+      </Transition>
       <!-- Header Section -->
       <div class="flex flex-col md:flex-row md:items-center gap-6">
         <Avatar v-if="result.dokployfile.meta.logo" class="w-24 h-24 rounded-xl border bg-card p-4">
@@ -89,14 +95,19 @@ onMounted(() => {
               <a :href="`https://github.com/${owner}/${repo}`" target="_blank" class="hover:text-primary flex items-center gap-1 transition-colors">
                 <Globe class="w-4 h-4" /> Template source
               </a>
-              <button
-                v-if="result.commit"
-                :title="`Commit: ${result.commit}`"
-                class="font-mono hover:text-primary transition-colors"
+              <Button
+                size="sm"
+                variant="outline"
+                class="gap-1.5 h-7"
                 @click="refetch"
               >
-                <RefreshCw class="w-4 h-4" /> {{ result.commit }}
-              </button>
+                <RefreshCw class="w-3.5 h-3.5" /> Refresh
+              </Button>
+              <span
+                v-if="result.commit"
+                :title="`Latest commit on ${result.branch}`"
+                class="font-mono"
+              >{{ result.commit }}</span>
               <template v-if="result.dokployfile.meta.links">
                 <a 
                   v-for="(url, label) in result.dokployfile.meta.links"
