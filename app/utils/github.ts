@@ -37,15 +37,20 @@ export async function resolveBranchCommit(
   owner: string,
   repo: string,
   branch: string
-): Promise<string | null> {
+): Promise<{ sha: string; date: string | null } | null> {
   try {
     const res = await fetch(
       `https://api.github.com/repos/${owner}/${repo}/commits/${branch}`
     );
     if (!res.ok) return null;
-    type GhCommit = { sha?: unknown };
+    type GhCommit = { sha?: unknown; commit?: { committer?: { date?: unknown } } };
     const data = (await res.json()) satisfies GhCommit;
-    return typeof data.sha === "string" ? data.sha.slice(0, 7) : null;
+    if (typeof data.sha !== "string") return null;
+    const date =
+      typeof data.commit?.committer?.date === "string"
+        ? data.commit.committer.date
+        : null;
+    return { sha: data.sha.slice(0, 7), date };
   } catch {
     return null;
   }

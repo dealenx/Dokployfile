@@ -39,6 +39,20 @@ const refetch = () => {
   processRepository(owner.value, repo.value, branch.value, true);
 };
 
+const commitInfo = computed(() => {
+  const c = result.value?.commit as { sha?: string; date?: string | null } | null;
+  if (!c?.sha) return null;
+  let ago = "";
+  if (c.date) {
+    const s = Math.floor((Date.now() - new Date(c.date).getTime()) / 1000);
+    ago = s < 60 ? "just now"
+      : s < 3600 ? `${Math.floor(s / 60)} min ago`
+      : s < 86400 ? `${Math.floor(s / 3600)} hour${Math.floor(s / 3600) > 1 ? "s" : ""} ago`
+      : `${Math.floor(s / 86400)} day${Math.floor(s / 86400) > 1 ? "s" : ""} ago`;
+  }
+  return { sha: c.sha, date: c.date ?? null, ago };
+});
+
 onMounted(() => {
   if (owner.value && repo.value) {
     processRepository(owner.value, repo.value, branch.value);
@@ -107,10 +121,12 @@ onMounted(() => {
                 Refresh
               </Button>
               <span
-                v-if="result.commit"
-                :title="`Latest commit on ${result.branch}`"
-                class="font-mono"
-              >{{ result.commit }}</span>
+                v-if="commitInfo"
+                class="font-mono flex items-center gap-2"
+              >
+                <span :title="`${commitInfo.sha} on ${result.branch}`">{{ commitInfo.sha }}</span>
+                <span v-if="commitInfo.ago" class="font-sans" :title="commitInfo.date ? new Date(commitInfo.date).toLocaleString() : ''">· {{ commitInfo.ago }}</span>
+              </span>
               <template v-if="result.dokployfile.meta.links">
                 <a 
                   v-for="(url, label) in result.dokployfile.meta.links"
