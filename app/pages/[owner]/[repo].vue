@@ -68,13 +68,10 @@ onMounted(() => {
       </AlertDescription>
     </Alert>
 
-    <div v-else-if="result" class="space-y-8">
-      <!-- Refreshing overlay (keep layout, no jumping) -->
-      <Transition name="fade">
-        <div v-if="loading" class="fixed inset-0 z-50 bg-background/60 backdrop-blur-sm flex items-center justify-center">
-          <Loader2 class="animate-spin w-8 h-8 opacity-50" />
-        </div>
-      </Transition>
+    <div v-else-if="result" class="relative">
+      <!-- Content cross-fade on refresh: keyed by commit, old stays until new data arrives -->
+      <Transition name="refresh" mode="out-in">
+        <div :key="result.commit || result.branch" class="space-y-8">
       <!-- Header Section -->
       <div class="flex flex-col md:flex-row md:items-center gap-6">
         <Avatar v-if="result.dokployfile.meta.logo" class="w-24 h-24 rounded-xl border bg-card p-4">
@@ -253,6 +250,8 @@ onMounted(() => {
           </CardContent>
         </Card>
       </div>
+        </div>
+      </Transition>
     </div>
   </div>
 </template>
