@@ -32,7 +32,12 @@ const activeTab = ref('compose');
 const { copy: copyCompose, copied: copiedCompose } = useClipboard();
 const { copy: copyConfig, copied: copiedConfig } = useClipboard();
 
-const refetch = () => processRepository(owner.value, repo.value, branch.value, true);
+// Incremented on every refetch so content re-animates even when data is unchanged
+const refreshCount = ref(0);
+const refetch = () => {
+  refreshCount.value++;
+  processRepository(owner.value, repo.value, branch.value, true);
+};
 
 onMounted(() => {
   if (owner.value && repo.value) {
@@ -69,11 +74,9 @@ onMounted(() => {
     </Alert>
 
     <div v-else-if="result" class="relative">
-      <!-- Content cross-fade on refresh: keyed by commit, old stays until new data arrives -->
-      <Transition name="refresh" mode="out-in">
-        <div :key="result.commit || result.branch" class="space-y-8">
-      <!-- Header Section -->
-      <div class="flex flex-col md:flex-row md:items-center gap-6">
+      <!-- Header is outside the transition so Refresh stays clickable while sections animate -->
+      <div class="flex items-center justify-between mb-8">
+        <div class="flex flex-col md:flex-row md:items-center gap-6">
         <Avatar v-if="result.dokployfile.meta.logo" class="w-24 h-24 rounded-xl border bg-card p-4">
           <AvatarImage
             :src="result.dokployfile.meta.logo.startsWith('http') 
@@ -96,9 +99,12 @@ onMounted(() => {
                 size="sm"
                 variant="outline"
                 class="gap-1.5 h-7"
+                :disabled="loading"
                 @click="refetch"
               >
-                <RefreshCw class="w-3.5 h-3.5" /> Refresh
+                <Loader2 v-if="loading" class="w-3.5 h-3.5 animate-spin" />
+                <RefreshCw v-else class="w-3.5 h-3.5" />
+                Refresh
               </Button>
               <span
                 v-if="result.commit"
@@ -120,7 +126,11 @@ onMounted(() => {
           </div>
         </div>
       </div>
+      </div>
 
+      <!-- Content sections animate on refresh; header with Refresh stays static -->
+      <Transition name="refresh" mode="out-in">
+        <div :key="refreshCount" class="space-y-8">
       <!-- Description & Tags -->
       <div class="space-y-4">
         <p class="text-lg text-muted-foreground leading-relaxed">{{ result.dokployfile.meta.description }}</p>
