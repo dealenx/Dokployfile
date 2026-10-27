@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Loader2, AlertTriangle, Link, XCircle, Info, Copy, Globe, FileCode, Check, ChevronLeft } from 'lucide-vue-next'
+import { Loader2, AlertTriangle, Link, XCircle, Info, Copy, Globe, FileCode, Check, ChevronLeft, RefreshCw } from 'lucide-vue-next'
 
 const route = useRoute();
 const owner = computed(() => route.params.owner as string);
@@ -31,6 +31,8 @@ const activeTab = ref('compose');
 
 const { copy: copyCompose, copied: copiedCompose } = useClipboard();
 const { copy: copyConfig, copied: copiedConfig } = useClipboard();
+
+const refetch = () => processRepository(owner.value, repo.value, branch.value, true);
 
 onMounted(() => {
   if (owner.value && repo.value) {
@@ -87,6 +89,14 @@ onMounted(() => {
               <a :href="`https://github.com/${owner}/${repo}`" target="_blank" class="hover:text-primary flex items-center gap-1 transition-colors">
                 <Globe class="w-4 h-4" /> Template source
               </a>
+              <button
+                v-if="result.commit"
+                :title="`Commit: ${result.commit}`"
+                class="font-mono hover:text-primary transition-colors"
+                @click="refetch"
+              >
+                <RefreshCw class="w-4 h-4" /> {{ result.commit }}
+              </button>
               <template v-if="result.dokployfile.meta.links">
                 <a 
                   v-for="(url, label) in result.dokployfile.meta.links"

@@ -1,32 +1,40 @@
+const memoryCache = new Map<string, unknown>();
+
 export function useGithubWorker() {
   const loading = ref(false);
   const error = ref<string | null>(null);
   const result = ref<any>(null);
 
-  const processRepository = (owner: string, repo: string, branch?: string) => {
+  const processRepository = (
+    owner: string,
+    repo: string,
+    branch?: string,
+    force = false
+  ) => {
     loading.value = true;
     error.value = null;
 
-    // Check cache
-    const cacheKey = `dokploy:${owner}/${repo}:${branch || "default"}`;
-    const cached = sessionStorage.getItem(cacheKey);
-    if (cached) {
-      result.value = JSON.parse(cached);
-      loading.value = false;
-      return;
+    const cacheKey = `${owner}/${repo}:${branch || "default"}`;
+    if (!force) {
+      const cached = memoryCache.get(cacheKey);
+      if (cached) {
+        result.value = cached;
+        loading.value = false;
+        return;
+      }
+    } else {
+      memoryCache.delete(cacheKey);
     }
 
     const worker = new Worker(
       new URL("../workers/github-worker.ts", import.meta.url),
-      {
-        type: "module",
-      }
+      { type: "module" }
     );
 
     worker.onmessage = (e) => {
       if (e.data.success) {
         result.value = e.data.data;
-        sessionStorage.setItem(cacheKey, JSON.stringify(e.data.data));
+        memoryCache.set(cacheKey, e.data.data);
       } else {
         error.value = e.data.error;
       }
@@ -43,10 +51,5 @@ export function useGithubWorker() {
     worker.postMessage({ owner, repo, branch });
   };
 
-  return {
-    loading,
-    error,
-    result,
-    processRepository,
-  };
+  return { loading, error, result, processRepository };
 }

@@ -18,21 +18,35 @@ export async function fetchGithubFile(
   return await response.text();
 }
 
-export async function resolveBranch(
+export async function resolveDefaultBranch(
+  owner: string,
+  repo: string
+): Promise<string | null> {
+  try {
+    const res = await fetch(`https://api.github.com/repos/${owner}/${repo}`);
+    if (!res.ok) return null;
+    type GhRepo = { default_branch?: unknown };
+    const data = (await res.json()) satisfies GhRepo;
+    return typeof data.default_branch === "string" ? data.default_branch : null;
+  } catch {
+    return null;
+  }
+}
+
+export async function resolveBranchCommit(
   owner: string,
   repo: string,
-  preferredBranch?: string
-): Promise<string> {
-  if (preferredBranch) return preferredBranch;
-
-  // Try main then master
+  branch: string
+): Promise<string | null> {
   try {
     const res = await fetch(
-      `${GITHUB_RAW_BASE}/${owner}/${repo}/main/README.md`,
-      { method: "HEAD" }
+      `https://api.github.com/repos/${owner}/${repo}/commits/${branch}`
     );
-    if (res.ok) return "main";
-  } catch {}
-
-  return "master";
+    if (!res.ok) return null;
+    type GhCommit = { sha?: unknown };
+    const data = (await res.json()) satisfies GhCommit;
+    return typeof data.sha === "string" ? data.sha.slice(0, 7) : null;
+  } catch {
+    return null;
+  }
 }

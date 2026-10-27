@@ -1,61 +1,56 @@
-import { fetchGithubFile, resolveBranch } from "../utils/github";
+import { fetchGithubFile, resolveDefaultBranch, resolveBranchCommit } from "../utils/github";
 import { generateDokployPayload } from "../utils/payload";
 import { lintComposeFile } from "../utils/linter";
 import { parse as parseYaml } from "yaml";
-import { DokployfileSchema } from "../utils/schema";
+import { DokployfileSchema, type Dokployfile } from "../utils/schema";
 
 self.onmessage = async (e: MessageEvent) => {
-  const { owner, repo, branch: preferredBranch } = e.data;
+  const { owner, repo, branch: preferredBranch } = e.data as {
+    owner: string;
+    repo: string;
+    branch?: string;
+  };
 
   try {
-    const branchesToTry = preferredBranch
-      ? [preferredBranch]
-      : ["main", "master"];
+    // Default branch from GitHub API, fallback main/master
+    let branchesToTry: string[];
+    if (preferredBranch) {
+      branchesToTry = [preferredBranch];
+    } else {
+      const apiBranch = await resolveDefaultBranch(owner, repo);
+      branchesToTry = apiBranch
+        ? Array.from(new Set([apiBranch, "main", "master"]))
+        : ["main", "master"];
+    }
+
     let branch = branchesToTry[0];
-    let dokployfileRaw: string | null = null;
-    let dokployfile: any = null;
+    let dokployfile: Dokployfile | null = null;
 
     // 1. Try to find Dokployfile.yml on available branches
     for (const b of branchesToTry) {
       try {
-        console.log(`Trying to fetch Dokployfile.yml from branch: ${b}`);
         const raw = await fetchGithubFile(owner, repo, b, "Dokployfile.yml");
-        console.log("Found Dokployfile.yml, parsing...");
-        const parsed = parseYaml(raw);
-        const validation = DokployfileSchema.safeParse(parsed);
+        const validation = DokployfileSchema.safeParse(parseYaml(raw));
         if (validation.success) {
           dokployfile = validation.data;
-          dokployfileRaw = raw;
           branch = b;
-          console.log("Dokployfile.yml successfully validated:", dokployfile);
           break;
-        } else {
-          console.error(
-            `Dokployfile.yml validation failed on branch ${b}`,
-            validation.error.format()
-          );
         }
-      } catch (err) {
-        console.log(`Dokployfile.yml not found on branch ${b}`);
-      }
+      } catch {}
     }
 
-    // 2. If no branch had a valid Dokployfile.yml, try to find the correct branch using a known file
+    // 2. If no branch had a valid Dokployfile.yml, use first branch that exists
     if (!dokployfile) {
-      console.log("No valid Dokployfile.yml found, using defaults...");
       if (!preferredBranch) {
-        for (const b of ["main", "master"]) {
+        for (const b of branchesToTry) {
           try {
-            // Try to fetch compose file directly as a health check for the branch
             await fetchGithubFile(owner, repo, b, "docker-compose.yml");
             branch = b;
-            console.log(`Defaulting to branch: ${branch}`);
             break;
-          } catch (err) {}
+          } catch {}
         }
       }
 
-      // Default configuration
       dokployfile = {
         version: "1",
         meta: {
@@ -70,29 +65,21 @@ self.onmessage = async (e: MessageEvent) => {
       };
     }
 
-    const composePath = dokployfile.template.compose;
-    const configPath = dokployfile.template.config;
-
-    console.log(
-      `Fetching template files: compose=${composePath}, config=${configPath}`
-    );
-
-    const [compose, configRaw] = await Promise.all([
-      fetchGithubFile(owner, repo, branch, composePath),
-      fetchGithubFile(owner, repo, branch, configPath).catch((err) => {
-        console.warn(`Optional config file not found: ${configPath}`, err);
-        return "";
-      }),
+    const [commit, compose, configRaw] = await Promise.all([
+      resolveBranchCommit(owner, repo, branch),
+      fetchGithubFile(owner, repo, branch, dokployfile.template.compose),
+      fetchGithubFile(owner, repo, branch, dokployfile.template.config).catch(
+        () => ""
+      ),
     ]);
 
-    const base64 = generateDokployPayload(compose, configRaw);
     const lintResults = lintComposeFile(compose);
     const logoPath = dokployfile.meta.logo;
 
     if (logoPath && !logoPath.startsWith("http")) {
       try {
         await fetchGithubFile(owner, repo, branch, logoPath);
-      } catch (err) {
+      } catch {
         lintResults.push({
           level: "error",
           message: `Logo file not found at path: ${logoPath}`,
@@ -106,15 +93,16 @@ self.onmessage = async (e: MessageEvent) => {
         dokployfile,
         compose,
         config: configRaw,
-        base64,
+        base64: generateDokployPayload(compose, configRaw),
         lintResults,
         branch,
+        commit,
       },
     });
-  } catch (error: any) {
+  } catch (error) {
     self.postMessage({
       success: false,
-      error: error.message,
+      error: error instanceof Error ? error.message : String(error),
     });
   }
 };
